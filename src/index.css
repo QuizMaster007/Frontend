@@ -2,41 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* QuizForge AI Design System - Modern, vibrant, engaging */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Primary Brand Colors - Vibrant Purple to Blue Gradient */
+    --background: 220 20% 98%;
+    --foreground: 230 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 230 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 230 15% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Main Brand - Purple to Blue */
+    --primary: 260 85% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 260 85% 70%;
+    --primary-dark: 260 85% 50%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Vibrant Accent - Orange */
+    --accent: 35 95% 60%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 35 95% 70%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Success & Error */
+    --success: 140 70% 50%;
+    --success-foreground: 0 0% 100%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Neutral Colors */
+    --secondary: 220 15% 96%;
+    --secondary-foreground: 230 15% 25%;
+    --muted: 220 15% 95%;
+    --muted-foreground: 230 10% 50%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --border: 220 15% 88%;
+    --input: 220 15% 95%;
+    --ring: 260 85% 60%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --radius: 1rem;
 
-    --radius: 0.5rem;
+    /* Custom Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(260 85% 60%), hsl(240 85% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(35 95% 60%), hsl(25 95% 65%));
+    --gradient-success: linear-gradient(135deg, hsl(140 70% 50%), hsl(120 70% 55%));
+    --gradient-background: linear-gradient(135deg, hsl(220 25% 99%), hsl(260 25% 97%));
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -2px hsl(260 85% 60% / 0.1);
+    --shadow-medium: 0 8px 30px -4px hsl(260 85% 60% / 0.15);
+    --shadow-strong: 0 16px 40px -8px hsl(260 85% 60% / 0.2);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +122,89 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-br from-background via-background to-secondary text-foreground font-medium;
+    background-image: var(--gradient-background);
+  }
+}
+
+@layer components {
+  /* Button Variants */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-primary-light text-primary-foreground;
+    @apply shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply hover:scale-105 active:scale-95;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent to-accent-light text-accent-foreground;
+    @apply shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply hover:scale-105 active:scale-95;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-success to-green-400 text-success-foreground;
+    @apply shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply hover:scale-105 active:scale-95;
+  }
+
+  /* Card Variants */
+  .card-elevated {
+    @apply bg-card border-0 rounded-2xl p-6;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-smooth);
+  }
+
+  .card-elevated:hover {
+    box-shadow: var(--shadow-medium);
+    @apply -translate-y-1;
+  }
+
+  .card-interactive {
+    @apply card-elevated cursor-pointer;
+    transition: var(--transition-bounce);
+  }
+
+  .card-interactive:hover {
+    @apply scale-105;
+    box-shadow: var(--shadow-strong);
+  }
+
+  /* Quiz Specific Components */
+  .quiz-option {
+    @apply bg-secondary border-2 border-border rounded-xl p-4 cursor-pointer;
+    @apply transition-all duration-200 hover:border-primary hover:bg-primary/5;
+  }
+
+  .quiz-option.selected {
+    @apply border-primary bg-primary/10 text-primary-dark;
+  }
+
+  .quiz-option.correct {
+    @apply border-success bg-success/10 text-success-foreground;
+    background-image: var(--gradient-success);
+    @apply text-white;
+  }
+
+  .quiz-option.incorrect {
+    @apply border-destructive bg-destructive/10 text-destructive-foreground;
+  }
+
+  /* Progress Components */
+  .progress-bar {
+    @apply bg-gradient-to-r from-primary via-accent to-primary-light;
+    @apply rounded-full transition-all duration-500 ease-out;
+  }
+
+  /* Animations */
+  .animate-slide-up {
+    @apply animate-in slide-in-from-bottom-4 duration-500;
+  }
+
+  .animate-fade-in {
+    @apply animate-in fade-in duration-300;
+  }
+
+  .animate-scale-in {
+    @apply animate-in zoom-in-95 duration-200;
   }
 }
