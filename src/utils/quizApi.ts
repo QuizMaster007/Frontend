@@ -153,10 +153,18 @@ export const generateQuiz = async (topic: string, settings: QuizSettings): Promi
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1500));
 
-  const questions = generateMockQuestions(topic, settings.numberOfQuestions, settings.difficulty);
-
+  // const questions = generateMockQuestions(topic, settings.numberOfQuestions, settings.difficulty);
+  const questions = await fetch('http://127.0.0.1:5000/api/generateQuiz', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ topic, num_questions: settings.numberOfQuestions, difficulty: settings.difficulty })
+  });
+  const data = await questions.json();
+  console.log(data);
   return {
     topic,
-    questions
+    questions: data.questions
   };
 };
