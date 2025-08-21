@@ -21,7 +21,7 @@ interface QuizData {
 const QuizInterface = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { topic, settings } = location.state || {};
+  const { topic, context, settings } = location.state || {};
 
   const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -33,7 +33,7 @@ const QuizInterface = () => {
     const loadQuiz = async () => {
       setIsLoading(true);
       try {
-        const quiz = await generateQuiz(topic, settings);
+        const quiz = await generateQuiz(topic,context, settings);
         setQuizData(quiz);
         
         if (settings?.timer) {

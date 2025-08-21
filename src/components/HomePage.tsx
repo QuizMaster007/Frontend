@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,12 +6,46 @@ import { Search, Brain, Zap, Target } from 'lucide-react';
 
 const HomePage = () => {
   const [topic, setTopic] = useState('');
+  const [extractedText, setExtractedText] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const handleStartQuiz = () => {
     if (topic.trim()) {
-      navigate('/settings', { state: { topic: topic.trim() } });
+      navigate('/settings', { state: { topic: topic.trim(), context: extractedText } });
     }
+  };
+
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('https://backend-ct6p.onrender.com/api/readImage', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) throw new Error('Failed to process image');
+      
+      const data = await response.json();
+      setExtractedText(data.extracted_text || 'No text found in the image');
+      setTopic(data.extracted_text || '');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setExtractedText('Error processing image. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const popularTopics = [
@@ -73,7 +107,29 @@ const HomePage = () => {
                   onKeyPress={(e) => e.key === 'Enter' && handleStartQuiz()}
                   className="pl-12 h-14 text-lg rounded-xl border-2 focus:border-primary"
                 />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={triggerFileInput}
+                  disabled={isLoading}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-10 px-4 rounded-lg"
+                >
+                  {isLoading ? 'Processing...' : 'Upload Image'}
+                </Button>
               </div>
+              {extractedText && (
+                <div className="p-4 bg-secondary/30 rounded-lg text-sm text-muted-foreground">
+                  <p className="font-medium mb-1">Extracted Text:</p>
+                  <p className="break-words">{extractedText}</p>
+                </div>
+              )}
               <Button 
                 onClick={handleStartQuiz}
                 disabled={!topic.trim()}

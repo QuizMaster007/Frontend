@@ -7,6 +7,7 @@ interface QuizSettings {
   timer: boolean;
   timerType: 'perQuestion' | 'total';
   timeLimit: number;
+  context?: string;
 }
 
 interface Question {
@@ -149,17 +150,18 @@ const generateMockQuestions = (topic: string, count: number, difficulty: string)
   return shuffled.slice(0, Math.min(count, shuffled.length));
 };
 
-export const generateQuiz = async (topic: string, settings: QuizSettings): Promise<QuizData> => {
+export const generateQuiz = async (topic: string, context: string, settings: QuizSettings): Promise<QuizData> => {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1500));
-
+  console.log("settings",settings)
   // const questions = generateMockQuestions(topic, settings.numberOfQuestions, settings.difficulty);
-  const questions = await fetch('http://127.0.0.1:5000/api/generateQuiz', {
+  const questions = await fetch('https://backend-ct6p.onrender.com/api/generateQuiz', {
     method: 'POST',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ topic, num_questions: settings.numberOfQuestions, difficulty: settings.difficulty })
+    body: JSON.stringify({ topic, num_questions: settings.numberOfQuestions, difficulty: settings.difficulty,context: context })
   });
   const data = await questions.json();
   console.log(data);

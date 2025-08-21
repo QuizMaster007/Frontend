@@ -16,6 +16,7 @@ const QuizSettings = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const topic = location.state?.topic || '';
+  const context = location.state?.context || '';
 
   const [settings, setSettings] = useState<QuizSettings>({
     numberOfQuestions: 10,
@@ -26,7 +27,7 @@ const QuizSettings = () => {
   });
 
   const handleStartQuiz = () => {
-    navigate('/quiz', { state: { topic, settings } });
+    navigate('/quiz', { state: { topic, context, settings } });
   };
 
   const questionOptions = [5, 10, 15, 20];
