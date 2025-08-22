@@ -158,9 +158,6 @@ export const generateQuiz = async (topic: string, context: string, settings: Qui
   const questions = await fetch('https://backend-ct6p.onrender.com/api/generateQuiz', {
     method: 'POST',
     mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify({ topic, num_questions: settings.numberOfQuestions, difficulty: settings.difficulty,context: context })
   });
   const data = await questions.json();
